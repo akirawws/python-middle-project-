@@ -110,4 +110,40 @@ Github action / gitlab CI/CD
 автоматизация процесса код - протестирован - задеплоен
 """
 
-# комиты 
+# базовая конфигурация  
+
+"""
+сначала установка виртуального окржуения python -m venv venv 
+venv/scripts/activate - активация виртуалки 
+
+установка зависимостей 
+pip install django 
+pip install django-environ psycopg2-binary redis celery  django-celery-results
+pip install pytest pytest-django pytest-cov black flake8 
+pip install freeze > requirement.txt 
+"""
+
+"""
+создание микро архитектуры
+src/ - папка для исходного кода
+config/ - проект django 
+apps/ - папка для приложений 
+- создаем первое приложение django-admin startapp user 
+django-admin startapp api 
+"""
+
+"""
+настраиваем конфигурацию init в settings 
+в корне проекта создаем файл .env (для приватности данных)
+для переменных окружения 
+
+"""
+
+"""
+создаем файлы игнорировваания .gitignore и .dockerignonre 
+в них прописываем разрешения и папки которые должны игнорироватсья и не тянуться не в гит и не в контейнер докера 
+"""
+
+"""
+теперь начинаем закидывать привтность подтягивания 
+"""
