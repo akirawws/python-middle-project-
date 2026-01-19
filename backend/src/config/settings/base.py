@@ -1,3 +1,4 @@
+#базовые настройки проекта 
 """
 Django settings for backend project.
 
@@ -11,22 +12,29 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import os 
-from datetime import timedelta
+import os
+from datetime import timedelta 
 import environ 
 
 env = environ.Env()
-# Читаем env файл
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR.parent))
 
-SECRET_KEY = env.str("SECRET_KEY")
+# читаем env файл
+environ.Env.read_env(os.path.join(BASE_DIR.parent,'.env'))
 
-DEBUG = env.bool("DEBUG", default=False)
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['localhost', '127.0.0.1'])
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env.str('SECRET_KEY')
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool('DEBUG',default=False)
+
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS',default=['localhost','127.0.0.1'])
 
 
 # Application definition
@@ -41,7 +49,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_celery_results',
-
 ]
 
 MIDDLEWARE = [
@@ -59,7 +66,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'example')],
+        'DIRS': [os.path.join(BASE_DIR,'example')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +85,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = { 'default':env.db('DATABASES', default='sqlite:///db.sqlite3')}
+DATABASES = {'defult':env.db('DATABASES',default='sqllite:///db.sqllite3')}
 
 
 # Password validation
@@ -112,29 +119,49 @@ USE_I18N = True
 USE_TZ = True
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
 MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR.parent,'media')
 
-
-# Cors 
-CORS_ALLOWED_ORIGINS = [
-    "название вашего домена",
-    "http://localhost:8000",
-    "http://localhost:3000",
+#CORS
+CORS_ALLOWED_ORIGINS=[
+    'название вашего домена',
+    'http://localhost:8000'
+    'http://localhost:3000'
 ]
 
-
-CASHES = {
+CACHES = {
     'default':{
-        'BACKEND': 'django_redis.cache.RedisCashe',
-        'LOCATION': env('REDUS_UR', default = 'redis://localhost:6379/0'),
+        'BACKEND':'django_redis.cache.RedisCache',
+        'LOCATION':env('REDIS_URL',default='redis://localhost:6379/0'),
         'OPTIONS':{
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CLIENT_CLASS':'django_redis.client.DefaultCleint'
         }
     }
 }
+
+# Celery 
+CELERY_BROKER_URL = env('CELERY_BROKER_URL',default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
+
+# в дальнейшем привяжем модель аунтефекации пользователя 
+#AUTH_USER_MODEL = 'user.User'
+
